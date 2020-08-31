@@ -1,27 +1,19 @@
-import sqlalchemy
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from .db import Base
 
 
-metadata = sqlalchemy.MetaData()
+class Person(Base):
+    __tablename__ = "persons"
 
-# association_table = sqlalchemy.Table('association', sqlalchemy.Base.metadata,
-#     sqlalchemy.Column('left_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('left.id')),
-#     sqlalchemy.Column('right_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('right.id'))
-# )
-
-persons_table = sqlalchemy.Table(
-    "persons",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String(100)),
-    sqlalchemy.Column("event", sqlalchemy.ForeignKey("users.id")),
-)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
 
 
-events_table = sqlalchemy.Table(
-    "events",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("date", sqlalchemy.DateTime()),
-    sqlalchemy.Column("description", sqlalchemy.String(1000)),
-)
+class Event(Base):
+    __tablename__ = "events"
 
+    id = Column(Integer, primary_key=True, index=True)
+    description = Column(String, index=True)
+    date = Column(String, index=True)

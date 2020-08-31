@@ -1,11 +1,13 @@
-from fastapi import FastAPI, APIRouter
-from app.db import engine, metadata, database
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-metadata.create_all(engine)
+from app import crud, models, schemas
+from app.db import engine, SessionLocal
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-router = APIRouter()
 
 origins = [
     "http://localhost",
@@ -20,6 +22,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 @app.get("/events")
 async def get_event():
@@ -40,9 +51,9 @@ async def get_event():
     }]
 
 
-@app.post("/events")
-async def get_event():
-    return {"result": "success"}
+@app.post("/events/", response_model=schemas.Event)
+def create_user(event: schemas.EventCreate, db: Session = Depends(get_db)):
+    return crud.create_event_item(db=db, event=event)
 
 
 @app.get("/events/{event_id}")

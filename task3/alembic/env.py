@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
-from app.models import metadata
+#from app.models import metadata
 import os, sys
 
 
@@ -19,4 +19,4 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-target_metadata = [metadata]
+#target_metadata = [metadata]
